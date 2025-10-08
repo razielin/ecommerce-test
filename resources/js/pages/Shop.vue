@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { getProducts } from '@/api/api';
 import { Product } from '@/types/model';
 import ProductCard from '@/components/shop/ProductCard.vue';
@@ -21,14 +21,28 @@ function toggleShowCart() {
     showCart.value = !showCart.value;
 }
 
+const fromPrice = ref('');
+const toPrice = ref('');
+const filteredProducts = computed(() => {
+    if (!fromPrice.value && !toPrice.value) {
+        return products.value;
+    }
+    let res = products.value.filter(p => +p.price > +fromPrice.value);
+    res = res.filter(p => +p.price < +toPrice.value);
+    return res;
+});
 </script>
 
 <template>
     <div>
         <ShoppingCartIcon @click="toggleShowCart"/>
+        <b>Price:</b>
+        <input type="number" v-model="fromPrice" class="priceFilter">
+        -
+        <input type="number" v-model="toPrice" class="priceFilter">
         <div class="flex xs:flex-col xs:items-center rounded-2xl p-7">
             <ProductCard
-                v-for="product in products"
+                v-for="product in filteredProducts"
                 :key="product.id"
                 :product="product"
                 @addedToCart="addToCard"
@@ -38,4 +52,10 @@ function toggleShowCart() {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.priceFilter {
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+}
+</style>
