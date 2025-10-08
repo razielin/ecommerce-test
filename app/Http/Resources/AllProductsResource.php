@@ -19,6 +19,7 @@ class AllProductsResource extends JsonResource
             'name' => $this->name,
             'price' => $this->price,
             'description' => $this->description,
+            'category_id' => $this->category_id,
             'image' => self::imageUrl($this->image),
         ];
     }

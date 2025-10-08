@@ -10,4 +10,5 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware('guest')->group(function () {
     Route::get('/products', [ProductController::class, 'all']);
+    Route::get('/categories', [ProductController::class, 'categories']);
 });

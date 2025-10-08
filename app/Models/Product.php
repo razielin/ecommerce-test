@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -15,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property string $description
  * @property string $image
  * @property string $price
+ * @property int $category_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -31,6 +33,7 @@ class Product extends Model
         'price',
         'description',
         'image',
+        'category_id',
     ];
 
     /**
@@ -44,6 +47,11 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 }
 
