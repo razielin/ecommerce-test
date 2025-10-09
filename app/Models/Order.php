@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property string $client_phone
  * @property string $client_address
  * @property string $comment
+ * @property float  $amount
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *

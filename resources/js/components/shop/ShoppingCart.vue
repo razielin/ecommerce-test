@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { cart } from '@/store/cart';
 import { Product } from '@/types/model';
+import OrderDetailsForm from '@/components/shop/OrderDetailsForm.vue';
 
 const emit = defineEmits<{
     close: [void]
 }>()
 
-const products: Product[] = computed(() => cart.state.products);
+const products = computed(() => cart.state.products);
 const totalPrice = computed(() => cart.getters.getTotalPrice);
 function getProductsQty(product: Product) {
     return cart.getters.getProductsQtyInCart(product.id);
@@ -24,6 +25,8 @@ function removeFromCart(product: Product) {
 function getSubTotal(product: Product) {
     return cart.getters.getSubTotal(product);
 }
+
+const showOrderDialog = ref(false);
 </script>
 
 <template>
@@ -101,6 +104,7 @@ function getSubTotal(product: Product) {
                         </button>
                         <button type="button"
                                 :disabled="products.length === 0"
+                                @click="showOrderDialog = true"
                                 class="px-4 py-2.5 rounded-md text-white text-sm font-medium border-none outline-none tracking-wide bg-blue-600 hover:bg-blue-700 active:bg-blue-600 cursor-pointer">
                             Proceed to checkout
                         </button>
@@ -109,9 +113,7 @@ function getSubTotal(product: Product) {
             </div>
         </div>
 
-        <button id="openModal" type="button"
-                class="mt-4 mx-auto block px-4 py-2.5 rounded-md text-white text-sm font-medium border-none outline-none tracking-wide bg-blue-600 hover:bg-blue-700 active:bg-blue-600">Open
-            Shopping Cart</button>
+        <OrderDetailsForm v-if="showOrderDialog" @close="showOrderDialog = false; emit('close')"/>
     </div>
 </template>
 

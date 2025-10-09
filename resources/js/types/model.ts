@@ -11,3 +11,25 @@ export type Category = {
     id: number
     name: string
 }
+
+export type OrderItem = {
+    product_id: number
+    quantity: number
+}
+
+export type NewOrderData = {
+    client_name: string
+    client_phone: string
+    client_address: string
+    comment: string
+    order_items: OrderItem[]
+}
+
+export type Order = {
+    id: number
+    client_name: string
+    client_phone: string
+    client_address: string
+    comment: string
+    amount: number
+}

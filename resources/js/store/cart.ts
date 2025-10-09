@@ -6,7 +6,7 @@ type ProductId = number
 export const cart = createStore({
     state() {
         return {
-            products: new Array<Product>,
+            products: [] as Product[],
             productsQtyInCart: new Map<ProductId, number>()
         }
     },
@@ -35,6 +35,10 @@ export const cart = createStore({
             } else {
                 state.productsQtyInCart.set(product.id, productQty - 1);
             }
+        },
+        resetCart(state) {
+            state.products = [];
+            state.productsQtyInCart.clear();
         }
     },
     getters: {
