@@ -17,13 +17,23 @@ use Illuminate\Support\Carbon;
  * @property string $client_address
  * @property string $comment
  * @property float  $amount
+ * @property int    $order_status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
  * @property-read EloquentCollection<int, OrderItem> $items
+ * @property-read string $order_status_label
  */
 class Order extends Model
 {
+    public const STATUS_NEW = 1;
+
+    /**
+     * @var array<int, string>
+     */
+    protected static array $statusLabels = [
+        self::STATUS_NEW => 'New',
+    ];
 
     /**
      * @var array<int, string>
@@ -33,7 +43,28 @@ class Order extends Model
         'client_phone',
         'client_address',
         'comment',
+        'order_status',
     ];
+
+    /**
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'amount' => 'float',
+        'order_status' => 'integer',
+    ];
+
+    /**
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'order_status_label',
+    ];
+
+    public function getOrderStatusLabelAttribute(): string
+    {
+        return self::$statusLabels[$this->order_status] ?? 'Unknown';
+    }
 
     public function items(): HasMany
     {

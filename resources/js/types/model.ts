@@ -33,3 +33,10 @@ export type Order = {
     comment: string
     amount: number
 }
+
+export type AdminOrder = {
+    items: OrderItem[]
+    products: Product[]
+    order_status: number
+    order_status_label: string
+} & Order

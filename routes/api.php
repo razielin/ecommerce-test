@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -11,5 +12,5 @@ Route::get('/user', function (Request $request) {
 Route::middleware('guest')->group(function () {
     Route::get('/products', [ProductController::class, 'all']);
     Route::get('/categories', [ProductController::class, 'categories']);
-    Route::post('/order', [ProductController::class, 'createNewOrder']);
+    Route::post('/order', [OrderController::class, 'createNewOrder']);
 });
