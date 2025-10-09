@@ -2,20 +2,25 @@
 namespace App\DTO;
 
 use App\Http\Requests\CreateOrderRequest;
+use App\Models\OrderItem;
 
 class CreateOrderDTO {
     public $client_name;
     public $client_phone;
     public $client_address;
     public $comment;
+    /**
+     * @var OrderItem[]
+     */
     public $order_items = [];
 
     public function addOrderItem(int $product_id, int $quantity)
     {
-        $this->order_items[] = [
+        $item = new OrderItem([
             'product_id' => $product_id,
             'quantity' => $quantity,
-        ];
+        ]);
+        $this->order_items[] = $item;
     }
 
     /**

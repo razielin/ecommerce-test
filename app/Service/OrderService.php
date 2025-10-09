@@ -23,16 +23,14 @@ class OrderService
             $totalAmount = 0.0;
 
             foreach ($orderDTO->order_items as $item) {
-                $product = Product::query()->findOrFail($item['product_id']);
-                $quantity = (int) $item['quantity'];
-
-                $lineAmount = (float) $product->price * $quantity;
+                $product = Product::query()->findOrFail($item->product_id);
+                $lineAmount = (float) $product->price * $item->quantity;
                 $totalAmount += $lineAmount;
 
                 $orderItem = new OrderItem([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
-                    'quantity' => $quantity,
+                    'quantity' => $item->quantity,
                 ]);
                 $orderItem->save();
             }
