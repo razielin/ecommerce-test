@@ -39,4 +39,5 @@ php artisan test
 http://localhost:8000/login
 ```
 Login: admin@admin.com
+
 Password: admin
