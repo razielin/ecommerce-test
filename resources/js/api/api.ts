@@ -1,8 +1,6 @@
 import { Category, NewOrderData, Order, Product } from '@/types/model';
 import { getApi, postApi } from '@/api/utils';
 
-const API_URL = 'http://localhost:8000';
-
 export async function getProducts(): Promise<Product[]> {
     return await getApi('/api/products');
 }

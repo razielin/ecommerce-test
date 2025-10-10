@@ -9,4 +9,13 @@ class ProductRepository
     {
         return Product::all();
     }
+
+    public function editProduct(int $id, array $data): Product
+    {
+        $product = Product::findOrFail($id);
+        
+        $product->update($data);
+        
+        return $product;
+    }
 }
