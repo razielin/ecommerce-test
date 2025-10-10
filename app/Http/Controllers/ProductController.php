@@ -43,4 +43,11 @@ class ProductController extends Controller {
 
         return $this->successJson(new AllProductsResource($product));
     }
+
+    public function deleteProduct(int $id)
+    {
+        $this->productService->deleteProduct($id);
+
+        return $this->successJson(['message' => 'Product deleted successfully']);
+    }
 }

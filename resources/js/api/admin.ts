@@ -12,3 +12,7 @@ export async function editProduct(product: Product): Promise<Product> {
 export async function addProduct(product: Partial<Product>): Promise<Product> {
     return await postApi('/admin/product/new', product);
 }
+
+export async function deleteProduct(id: number): Promise<{ message: string }> {
+    return await postApi(`/admin/product/delete/${id}`, {});
+}

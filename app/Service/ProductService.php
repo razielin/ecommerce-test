@@ -28,6 +28,11 @@ class ProductService
         return $this->productRepository->create($productData);
     }
 
+    public function deleteProduct(int $id): bool
+    {
+        return $this->productRepository->delete($id);
+    }
+
     private function prepareProductData(EditProductRequest|AddProductRequest $request): array
     {
         $data = [

@@ -23,4 +23,10 @@ class ProductRepository
     {
         return Product::create($data);
     }
+
+    public function delete(int $id): bool
+    {
+        $product = Product::findOrFail($id);
+        return $product->delete();
+    }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { getProducts } from '@/api/api';
+import { deleteProduct } from '@/api/admin';
 import { Product } from '@/types/model';
 import AppLayout from '@/layouts/AppLayout.vue';
 import EditProductDialog from '@/components/admin/EditProductDialog.vue';
@@ -49,6 +50,22 @@ function handleCloseDialog() {
     selectedProduct.value = null;
 }
 
+async function handleDeleteProduct(product: Product) {
+    if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
+        try {
+            await deleteProduct(product.id);
+            // Remove product from local array
+            const index = products.value.findIndex(p => p.id === product.id);
+            if (index !== -1) {
+                products.value.splice(index, 1);
+            }
+        } catch (error) {
+            console.error('Failed to delete product:', error);
+            alert('Failed to delete product. Please try again.');
+        }
+    }
+}
+
 </script>
 
 <template>
@@ -87,12 +104,20 @@ function handleCloseDialog() {
                         <p class="text-gray-600 text-sm mb-3">{{ product.description }}</p>
                         <div class="flex items-center justify-between">
                             <span class="text-xl font-bold">${{ product.price }}</span>
-                            <button
-                                @click="editProduct(product)"
-                                class="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 transition-colors text-sm"
-                            >
-                                Edit
-                            </button>
+                            <div class="flex gap-2">
+                                <button
+                                    @click="editProduct(product)"
+                                    class="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 transition-colors text-sm"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    @click="handleDeleteProduct(product)"
+                                    class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition-colors text-sm"
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
