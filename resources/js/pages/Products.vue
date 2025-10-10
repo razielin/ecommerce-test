@@ -59,7 +59,8 @@ function handleCloseDialog() {
                         <img
                             :src="product.image"
                             :alt="product.name"
-                            class="w-full h-full object-cover"
+                            style="height: 150px; margin: 0 auto;"
+                            class="object-cover"
                         />
                     </div>
                     <div class="p-4">
@@ -78,7 +79,7 @@ function handleCloseDialog() {
                 </div>
             </div>
         </div>
-        
+
         <EditProductDialog
             :product="selectedProduct"
             :is-open="isEditDialogOpen"

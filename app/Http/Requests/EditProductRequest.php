@@ -5,10 +5,11 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
+ * @property int $id
  * @property string $name
  * @property string $price
  * @property string $description
- * @property string $image
+ * @property string|null $image
  * @property int $category_id
  */
 class EditProductRequest extends FormRequest
@@ -33,7 +34,7 @@ class EditProductRequest extends FormRequest
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'description' => 'required|string',
-            'image' => 'required|url',
+            'image' => 'sometimes|nullable|string|regex:/^data:image\//',
             'category_id' => 'required|integer|min:1',
         ];
     }

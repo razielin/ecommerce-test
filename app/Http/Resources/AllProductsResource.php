@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class AllProductsResource extends JsonResource
 {
@@ -26,6 +27,6 @@ class AllProductsResource extends JsonResource
 
     private static function imageUrl(string $image): string
     {
-        return env('APP_URL') . '/images/' . $image;
+        return Storage::url('public/images/' . $image);
     }
 }

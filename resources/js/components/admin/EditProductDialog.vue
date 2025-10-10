@@ -25,6 +25,8 @@ const formData = ref({
 const isLoading = ref(false);
 const categories = ref<Category[]>([]);
 const categoriesLoading = ref(false);
+const selectedFile = ref<File | null>(null);
+const imagePreview = ref<string>('');
 
 watch(() => props.product, (newProduct) => {
     if (newProduct) {
@@ -35,6 +37,8 @@ watch(() => props.product, (newProduct) => {
             image: newProduct.image,
             category_id: newProduct.category_id
         };
+        imagePreview.value = newProduct.image;
+        selectedFile.value = null;
     }
 });
 
@@ -49,20 +53,40 @@ onMounted(async () => {
     }
 });
 
-async function handleSave() {
+function handleFileSelect(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+
+    if (file) {
+        selectedFile.value = file;
+
+        // Create preview URL
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.value = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+async function saveProduct() {
     if (!props.product) return;
 
     isLoading.value = true;
 
     try {
         const updatedProduct: Product = {
-            ...props.product,
+            id: props.product.id,
             name: formData.value.name,
             price: parseFloat(formData.value.price),
             description: formData.value.description,
-            image: formData.value.image,
             category_id: formData.value.category_id
         };
+
+        // Only include image if a new file was selected
+        if (selectedFile.value) {
+            updatedProduct.image = imagePreview.value;
+        }
 
         const savedProduct = await editProduct(updatedProduct);
         emit('save', savedProduct);
@@ -85,7 +109,7 @@ function handleClose() {
         <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <h2 class="text-xl font-semibold mb-4">Edit Product</h2>
 
-            <form @submit.prevent="handleSave" class="space-y-4">
+            <form @submit.prevent="saveProduct" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
                     <input
@@ -119,13 +143,20 @@ function handleClose() {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
                     <input
-                        v-model="formData.image"
-                        type="url"
-                        required
+                        type="file"
+                        accept="image/*"
+                        @change="handleFileSelect"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <div v-if="imagePreview" class="mt-2">
+                        <img
+                            :src="imagePreview"
+                            alt="Product preview"
+                            class="w-32 h-32 object-cover rounded-md border"
+                        />
+                    </div>
                 </div>
 
                 <div>
