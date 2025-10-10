@@ -58,7 +58,7 @@ const productsFilteredByPriceAndCategory = computed(() => {
                     :value="category.id"
             >{{category.name}}</option>
         </select>
-        <h2 v-if="products.length === 0">No products added</h2>
+        <h1 v-if="products.length === 0" style="text-align: center">No products added</h1>
         <div class="flex xs:flex-col xs:items-center rounded-2xl p-7">
             <ProductCard
                 v-for="product in productsFilteredByPriceAndCategory"
