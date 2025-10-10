@@ -32,8 +32,8 @@ const productsFilteredByPrice = computed(() => {
     if (!fromPrice.value && !toPrice.value) {
         return products.value;
     }
-    let res = products.value.filter(p => +p.price > +fromPrice.value);
-    res = res.filter(p => +p.price < +toPrice.value);
+    let res = products.value.filter(p => +p.price >= +fromPrice.value);
+    res = res.filter(p => +p.price <= +toPrice.value);
     return res;
 });
 const productsFilteredByPriceAndCategory = computed(() => {
