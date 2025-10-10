@@ -34,3 +34,9 @@ http://localhost:8000/
 ```shell
 php artisan test
 ```
+# Demo admin account
+```shell
+http://localhost:8000/login
+```
+Login: admin@admin.com
+Password: admin
