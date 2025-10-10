@@ -17,6 +17,7 @@ class OrderService
                 'client_phone' => $orderDTO->client_phone,
                 'client_address' => $orderDTO->client_address,
                 'comment' => (string) ($orderDTO->comment ?? ''),
+                'order_status' => Order::STATUS_NEW,
             ]);
             $order->save();
 
