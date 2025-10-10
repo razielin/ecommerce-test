@@ -25,8 +25,11 @@ class AllProductsResource extends JsonResource
         ];
     }
 
-    private static function imageUrl(string $image): string
+    private static function imageUrl(?string $image): string
     {
+        if (!$image) {
+            return '';
+        }
         return Storage::url('public/images/' . $image);
     }
 }

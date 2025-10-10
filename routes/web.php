@@ -20,6 +20,7 @@ Route::get('products', function () {
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/orders', [OrderController::class, 'all']);
     Route::post('/product/edit', [ProductController::class, 'editProduct']);
+    Route::post('/product/new', [ProductController::class, 'addProduct']);
 });
 
 require __DIR__.'/settings.php';

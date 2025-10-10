@@ -5,14 +5,13 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * @property int $id
  * @property string $name
  * @property string $price
  * @property string $description
  * @property string|null $image
  * @property int $category_id
  */
-class EditProductRequest extends AddProductRequest
+class AddProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,8 +28,12 @@ class EditProductRequest extends AddProductRequest
      */
     public function rules(): array
     {
-        return parent::rules() + [
-            'id' => 'required|integer',
+        return [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'description' => 'required|string',
+            'image' => 'nullable|string|regex:/^data:image/',
+            'category_id' => 'required|integer|min:1',
         ];
     }
 }

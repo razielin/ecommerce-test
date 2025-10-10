@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import { Product, Category } from '@/types/model';
-import { editProduct } from '@/api/admin';
+import { editProduct, addProduct } from '@/api/admin';
 import { getCategories } from '@/api/api';
 
 const props = defineProps<{
     product: Product | null;
     isOpen: boolean;
+    isCreateMode?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -34,10 +35,36 @@ watch(() => props.product, (newProduct) => {
             name: newProduct.name,
             price: newProduct.price.toString(),
             description: newProduct.description,
-            image: newProduct.image,
+            image: newProduct.image || '',
             category_id: newProduct.category_id
         };
-        imagePreview.value = newProduct.image;
+        imagePreview.value = newProduct.image || '';
+        selectedFile.value = null;
+    } else if (props.isCreateMode) {
+        // Reset form for create mode
+        formData.value = {
+            name: '',
+            price: '',
+            description: '',
+            image: '',
+            category_id: 1
+        };
+        imagePreview.value = '';
+        selectedFile.value = null;
+    }
+});
+
+watch(() => props.isCreateMode, (isCreate) => {
+    if (isCreate) {
+        // Reset form for create mode
+        formData.value = {
+            name: '',
+            price: '',
+            description: '',
+            image: '',
+            category_id: 1
+        };
+        imagePreview.value = '';
         selectedFile.value = null;
     }
 });
@@ -70,25 +97,36 @@ function handleFileSelect(event: Event) {
 }
 
 async function saveProduct() {
-    if (!props.product) return;
-
     isLoading.value = true;
 
     try {
-        const updatedProduct: Product = {
-            id: props.product.id,
+        const productData: Partial<Product> = {
             name: formData.value.name,
             price: parseFloat(formData.value.price),
             description: formData.value.description,
             category_id: formData.value.category_id
         };
 
-        // Only include image if a new file was selected
-        if (selectedFile.value) {
-            updatedProduct.image = imagePreview.value;
+        // Only include image if a new file was selected or in create mode
+        if (selectedFile.value || props.isCreateMode) {
+            productData.image = imagePreview.value;
         }
 
-        const savedProduct = await editProduct(updatedProduct);
+        let savedProduct: Product;
+
+        if (props.isCreateMode) {
+            // Create new product
+            savedProduct = await addProduct(productData as Product);
+        } else {
+            // Edit existing product
+            if (!props.product) return;
+            const updatedProduct: Product = {
+                id: props.product.id,
+                ...productData
+            } as Product;
+            savedProduct = await editProduct(updatedProduct);
+        }
+
         emit('save', savedProduct);
         emit('close');
     } catch (error) {
@@ -107,7 +145,9 @@ function handleClose() {
 <template>
     <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h2 class="text-xl font-semibold mb-4">Edit Product</h2>
+            <h2 class="text-xl font-semibold mb-4">
+                {{ isCreateMode ? 'Create New Product' : 'Edit Product' }}
+            </h2>
 
             <form @submit.prevent="saveProduct" class="space-y-4">
                 <div>
@@ -192,7 +232,7 @@ function handleClose() {
                         :disabled="isLoading"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {{ isLoading ? 'Saving...' : 'Save' }}
+                        {{ isLoading ? (isCreateMode ? 'Creating...' : 'Saving...') : (isCreateMode ? 'Create' : 'Save') }}
                     </button>
                 </div>
             </form>

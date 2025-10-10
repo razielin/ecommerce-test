@@ -8,3 +8,7 @@ export async function getOrders(): Promise<Order[]> {
 export async function editProduct(product: Product): Promise<Product> {
     return await postApi('/admin/product/edit', product);
 }
+
+export async function addProduct(product: Partial<Product>): Promise<Product> {
+    return await postApi('/admin/product/new', product);
+}

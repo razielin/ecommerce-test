@@ -10,6 +10,7 @@ const isLoading = ref(true);
 const error = ref<string | null>(null);
 const selectedProduct = ref<Product | null>(null);
 const isEditDialogOpen = ref(false);
+const isCreateDialogOpen = ref(false);
 
 onMounted(async () => {
     try {
@@ -26,15 +27,25 @@ function editProduct(product: Product) {
     isEditDialogOpen.value = true;
 }
 
+function createProduct() {
+    selectedProduct.value = null;
+    isCreateDialogOpen.value = true;
+}
+
 function handleSaveProduct(updatedProduct: Product) {
     const index = products.value.findIndex(p => p.id === updatedProduct.id);
     if (index !== -1) {
+        // Update existing product
         products.value[index] = updatedProduct;
+    } else {
+        // Add new product
+        products.value.push(updatedProduct);
     }
 }
 
 function handleCloseDialog() {
     isEditDialogOpen.value = false;
+    isCreateDialogOpen.value = false;
     selectedProduct.value = null;
 }
 
@@ -45,7 +56,15 @@ function handleCloseDialog() {
         <div
             class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
         >
-            <h1 class="text-2xl font-semibold">Products</h1>
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-semibold">Products</h1>
+                <button
+                    @click="createProduct"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                >
+                    Add Product
+                </button>
+            </div>
 
             <div v-if="isLoading" class="text-gray-500">Loading products...</div>
             <div v-else-if="error" class="text-red-600">{{ error }}</div>
@@ -83,6 +102,15 @@ function handleCloseDialog() {
         <EditProductDialog
             :product="selectedProduct"
             :is-open="isEditDialogOpen"
+            @close="handleCloseDialog"
+            @save="handleSaveProduct"
+        />
+
+        <EditProductDialog
+            :product="null"
+            :is-open="isCreateDialogOpen"
+            :is-create-mode="true"
+            v-if="isCreateDialogOpen"
             @close="handleCloseDialog"
             @save="handleSaveProduct"
         />

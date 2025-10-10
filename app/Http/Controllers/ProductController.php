@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddProductRequest;
 use App\Http\Requests\EditProductRequest;
 use App\Http\Resources\AllProductsResource;
 use App\Repository\CategoryRepository;
@@ -32,6 +33,13 @@ class ProductController extends Controller {
     public function editProduct(EditProductRequest $request)
     {
         $product = $this->productService->editProduct($request);
+
+        return $this->successJson(new AllProductsResource($product));
+    }
+
+    public function addProduct(AddProductRequest $request)
+    {
+        $product = $this->productService->addProduct($request);
 
         return $this->successJson(new AllProductsResource($product));
     }

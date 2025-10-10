@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Http\Requests\AddProductRequest;
 use App\Http\Requests\EditProductRequest;
 use App\Models\Product;
 use App\Repository\ProductRepository;
@@ -17,26 +18,41 @@ class ProductService
 
     public function editProduct(EditProductRequest $request): Product
     {
-        $updateData = [
+        $updateData = $this->prepareProductData($request);
+        return $this->productRepository->editProduct($request->id, $updateData);
+    }
+
+    public function addProduct(AddProductRequest $request): Product
+    {
+        $productData = $this->prepareProductData($request);
+        return $this->productRepository->create($productData);
+    }
+
+    private function prepareProductData(EditProductRequest|AddProductRequest $request): array
+    {
+        $data = [
             'name' => $request->name,
             'price' => $request->price,
             'description' => $request->description,
             'category_id' => $request->category_id,
         ];
 
-        // Only process image if it's provided
+        $this->processImageIfProvided($request, $data);
+
+        return $data;
+    }
+
+    private function processImageIfProvided($request, array &$data): void
+    {
         if ($request->image !== null) {
             $imagePath = $request->image;
 
-            // If image is base64, save it to file
             if (str_starts_with($request->image, 'data:image/')) {
                 $imagePath = $this->saveBase64Image($request->image);
             }
 
-            $updateData['image'] = $imagePath;
+            $data['image'] = $imagePath;
         }
-
-        return $this->productRepository->editProduct($request->id, $updateData);
     }
 
     private function saveBase64Image(string $base64Image): string
